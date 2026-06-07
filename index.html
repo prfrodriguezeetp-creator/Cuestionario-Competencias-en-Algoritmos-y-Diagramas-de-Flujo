@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuestionario Interactivo · Algoritmos y Diagramas de Flujo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --primary: #f59e0b;
+            --primary-dark: #d97706;
+            --primary-light: #451a03;
+            --accent: #fbbf24;
+            --success: #10b981;
+            --success-light: #064e3b;
+            --success-border: #34d399;
+            --error: #ef4444;
+            --error-light: #450a0a;
+            --error-border: #f87171;
+            --border: #334155;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 20px 30px rgba(0, 0, 0, 0.6);
+            --radius: 12px;
+            --radius-xl: 20px;
+            --transition: 0.2s ease;
+            --font: 'Inter', system-ui, sans-serif;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: var(--font);
+            background: radial-gradient(circle at 10% 20%, #1e293b, #0f172a 80%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--surface);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.5s ease-out;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .app-header {
+            background: linear-gradient(135deg, #1c1917 0%, #292524 40%, #451a03 100%);
+            padding: 22px 28px;
+            color: #f5f5f4;
+            position: relative;
+            overflow: hidden;
+        }
+        .app-header::after {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(245, 158, 11, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+        .app-header h1 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+        .subtitle {
+            font-size: 0.7rem;
+            opacity: 0.65;
+            letter-spacing: 0.03em;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(245, 158, 11, 0.18);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #fde68a;
+            letter-spacing: 0.02em;
+        }
+        .progress-section {
+            padding: 16px 28px 8px;
+            background: #0f172a;
+            border-bottom: 1px solid var(--border);
+        }
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+        .progress-info .respondidas {
+            color: #fbbf24;
+            font-weight: 700;
+        }
+        .progress-bar-track {
+            width: 100%;
+            height: 8px;
+            background: #1e293b;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 20px;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #fcd34d);
+            transition: width 0.5s ease;
+            width: 0%;
+            position: relative;
+        }
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            width: 20px;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            animation: shimmer 1.8s infinite;
+        }
+        @keyframes shimmer {
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        .main-content {
+            padding: 24px 28px 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .question-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(245, 158, 11, 0.1);
+            color: #fbbf24;
+            font-weight: 700;
+            font-size: 0.82rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            width: fit-content;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            letter-spacing: 0.02em;
+        }
+        .question-indicator .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fcd34d;
+            animation: pulse-dot 1.5s infinite;
+        }
+        @keyframes pulse-dot {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.6);
+                opacity: 0.5;
+            }
+        }
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.6;
+            letter-spacing: -0.01em;
+        }
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            list-style: none;
+        }
+        .option-item {
+            display: flex;
+            align-items: stretch;
+            cursor: pointer;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            background: #0f172a;
+            transition: all var(--transition);
+            overflow: hidden;
+        }
+        .option-item:hover:not(.disabled) {
+            border-color: #f59e0b;
+            background: #1c1917;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+        }
+        .option-item:active:not(.disabled) {
+            transform: scale(0.985);
+        }
+        .option-item.disabled {
+            cursor: default;
+            pointer-events: none;
+        }
+        .option-item.correct {
+            border-color: var(--success-border) !important;
+            background: var(--success-light) !important;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+        .option-item.incorrect {
+            border-color: var(--error-border) !important;
+            background: var(--error-light) !important;
+            box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
+        }
+        .option-item.reveal-correct {
+            border-color: var(--success-border) !important;
+            background: #0a3d2a !important;
+        }
+        .option-letter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            min-width: 48px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            background: #1e293b;
+            border-right: 2px solid var(--border);
+            transition: all var(--transition);
+            letter-spacing: 0.03em;
+        }
+        .option-item.correct .option-letter {
+            background: #10b981;
+            color: #fff;
+            border-right-color: #10b981;
+        }
+        .option-item.incorrect .option-letter {
+            background: #ef4444;
+            color: #fff;
+            border-right-color: #ef4444;
+        }
+        .option-item.reveal-correct .option-letter {
+            background: #10b981;
+            color: #fff;
+            border-right-color: #10b981;
+        }
+        .option-text {
+            padding: 13px 16px;
+            flex: 1;
+            font-size: 0.93rem;
+            font-weight: 500;
+            color: #cbd5e1;
+            line-height: 1.4;
+            display: flex;
+            align-items: center;
+        }
+        .option-item.correct .option-text,
+        .option-item.incorrect .option-text {
+            font-weight: 600;
+        }
+        .option-icon {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            min-width: 40px;
+            font-size: 1.3rem;
+        }
+        .option-item.correct .option-icon,
+        .option-item.incorrect .option-icon,
+        .option-item.reveal-correct .option-icon {
+            display: flex;
+        }
+        .option-item.correct .option-icon::after {
+            content: '✓';
+            color: #34d399;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+        .option-item.incorrect .option-icon::after {
+            content: '✗';
+            color: #f87171;
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+        .option-item.reveal-correct .option-icon::after {
+            content: '✓';
+            color: #34d399;
+            font-weight: 700;
+        }
+
+        .justification-box {
+            background: #0f172a;
+            border-left: 4px solid var(--primary);
+            border-radius: 0 var(--radius) var(--radius) 0;
+            padding: 16px 18px;
+            margin-top: 2px;
+            font-size: 0.88rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            animation: slideIn 0.35s ease-out;
+            display: none;
+        }
+        .justification-box.visible {
+            display: block;
+        }
+        .justification-box .just-label {
+            font-weight: 700;
+            color: #fbbf24;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-size: 0.73rem;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .justification-box.correct-just {
+            border-left-color: #34d399;
+            background: #0a2e1f;
+        }
+        .justification-box.correct-just .just-label {
+            color: #34d399;
+        }
+        .justification-box.incorrect-just {
+            border-left-color: #f87171;
+            background: #2e0f0f;
+        }
+        .justification-box.incorrect-just .just-label {
+            color: #f87171;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .nav-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 0 0;
+            flex-wrap: wrap;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 11px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all var(--transition);
+            letter-spacing: 0.01em;
+            font-family: var(--font);
+            white-space: nowrap;
+        }
+        .nav-btn:active {
+            transform: scale(0.96);
+        }
+        .btn-prev {
+            background: #1e293b;
+            color: #94a3b8;
+            border: 1px solid #334155;
+        }
+        .btn-prev:hover {
+            background: #334155;
+            color: #e2e8f0;
+        }
+        .btn-prev:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+        .btn-next {
+            background: var(--primary);
+            color: #1c1917;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+        }
+        .btn-next:hover {
+            background: var(--primary-dark);
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+            transform: translateY(-1px);
+        }
+        .btn-finish {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: #fff;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+        .btn-finish:hover {
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.45);
+            transform: translateY(-1px);
+            filter: brightness(1.05);
+        }
+        .btn-restart {
+            background: transparent;
+            color: #fbbf24;
+            border: 2px solid #f59e0b;
+            font-weight: 700;
+        }
+        .btn-restart:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: #fbbf24;
+        }
+
+        .results-screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 30px 20px;
+            gap: 18px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        .results-screen.active {
+            display: flex;
+        }
+        .results-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .results-circle .inner-circle {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        .results-circle .percentage {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #f5f5f4;
+            line-height: 1;
+        }
+        .results-circle .pct-symbol {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #94a3b8;
+        }
+        .results-summary {
+            font-size: 0.95rem;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        .results-summary strong {
+            color: #f5f5f4;
+            font-weight: 700;
+        }
+        .results-emoji {
+            font-size: 3rem;
+        }
+
+        @media (max-width: 600px) {
+            .app-container {
+                border-radius: 16px;
+            }
+            .app-header {
+                padding: 16px 18px;
+            }
+            .app-header h1 {
+                font-size: 0.95rem;
+            }
+            .badge {
+                font-size: 0.7rem;
+                padding: 4px 10px;
+            }
+            .main-content {
+                padding: 18px 16px 16px;
+                gap: 14px;
+            }
+            .progress-section {
+                padding: 12px 16px 6px;
+            }
+            .question-text {
+                font-size: 0.95rem;
+            }
+            .option-text {
+                font-size: 0.85rem;
+                padding: 12px 10px;
+            }
+            .option-letter {
+                width: 38px;
+                min-width: 38px;
+                font-size: 0.9rem;
+            }
+            .nav-btn {
+                padding: 10px 16px;
+                font-size: 0.82rem;
+                border-radius: 22px;
+            }
+            .nav-section {
+                gap: 8px;
+            }
+            .results-circle {
+                width: 120px;
+                height: 120px;
+            }
+            .results-circle .inner-circle {
+                width: 94px;
+                height: 94px;
+            }
+            .results-circle .percentage {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container" id="appContainer">
+        <!-- Header -->
+        <div class="app-header">
+            <div class="header-top">
+                <div class="logo-area">
+                    <div class="logo-icon">🤖</div>
+                    <div>
+                        <h1>Competencias en Algoritmos y Diagramas de Flujo</h1>
+                        <span class="subtitle">Robot Procesador · Símbolos · Bucles · Condicionales</span>
+                    </div>
+                </div>
+                <span class="badge">🔷 Nivel Técnico Avanzado</span>
+            </div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="progress-section" id="progressSection">
+            <div class="progress-info">
+                <span>Progreso de la práctica</span>
+                <span class="respondidas" id="respondidasCount">0 / 20 respondidas</span>
+            </div>
+            <div class="progress-bar-track">
+                <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="main-content" id="mainContent">
+            <div class="question-indicator" id="questionIndicator">
+                <span class="dot"></span> <span id="qIndicatorText">Pregunta 1 de 20</span>
+            </div>
+            <p class="question-text" id="questionText"></p>
+            <ul class="options-list" id="optionsList"></ul>
+            <div class="justification-box" id="justificationBox">
+                <span class="just-label" id="justLabel">Justificación técnica</span>
+                <span id="justText"></span>
+            </div>
+            <div class="nav-section">
+                <button class="nav-btn btn-prev" id="btnPrev" title="Pregunta anterior">← Anterior</button>
+                <button class="nav-btn btn-finish" id="btnFinish" title="Finalizar práctica">🏁 Finalizar</button>
+                <button class="nav-btn btn-next" id="btnNext" title="Siguiente pregunta">Siguiente →</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de resultados -->
+        <div class="results-screen" id="resultsScreen">
+            <div class="results-emoji" id="resultsEmoji">🎯</div>
+            <div class="results-circle" id="resultsCircle">
+                <div class="inner-circle">
+                    <span class="percentage" id="resultsPercentage">0</span>
+                    <span class="pct-symbol">%</span>
+                </div>
+            </div>
+            <div class="results-summary" id="resultsSummary"></div>
+            <button class="nav-btn btn-restart" id="btnRestart">🔄 Volver a intentar (nuevo orden)</button>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // ==================== BLOQUEO DE HERRAMIENTAS DE INSPECCIÓN ====================
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                return false;
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.keyCode === 123) {
+                    e.preventDefault();
+                    return false;
+                }
+                if (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) {
+                    e.preventDefault();
+                    return false;
+                }
+                if (e.ctrlKey && e.keyCode === 85) {
+                    e.preventDefault();
+                    return false;
+                }
+                if (e.ctrlKey && e.keyCode === 83) {
+                    e.preventDefault();
+                    return false;
+                }
+            });
+            let devToolsOpen = false;
+            const threshold = 160;
+            const checkDevTools = function() {
+                const widthThreshold = window.outerWidth - window.innerWidth > threshold;
+                const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+                if (widthThreshold || heightThreshold) {
+                    if (!devToolsOpen) {
+                        devToolsOpen = true;
+                        console.clear();
+                        console.log('%c⚠️ Modo práctica: se recomienda no usar herramientas de inspección.',
+                            'color: #f59e0b; font-size:14px;');
+                    }
+                } else {
+                    devToolsOpen = false;
+                }
+            };
+            window.addEventListener('resize', checkDevTools);
+            checkDevTools();
+
+            // ==================== DATOS DEL CUESTIONARIO ====================
+            const questionsData = [{
+                id: 1,
+                text: 'Al analizar la estructura del "Robot Procesador", ¿cuál es la consecuencia lógica de omitir el bloque condicional "¿Quedan?" antes de la instrucción "Volver"?',
+                options: [
+                    'Generar una iteración infinita que impide la finalización del proceso.',
+                    'Provocar una ejecución lineal que ignora el procesamiento de la lista.',
+                    'Alterar la jerarquía de los comandos de inicio dentro del simulador.',
+                    'Duplicar el registro de los alumnos en cada ciclo de retroalimentación.',
+                    'Validar el estado del sistema sin haber completado la carga de datos.'
+                ],
+                correctIndex: 0,
+                justification: 'El bloque "¿Quedan?" actúa como la condición de salida del bucle; sin ella, la instrucción "Volver" se ejecutaría indefinidamente sin llegar nunca al "Fin".'
+            }, {
+                id: 2,
+                text: 'En el "Algoritmo del Pan", ¿por qué la acción "Pedir el pan" debe asignarse técnicamente a un paralelogramo y no a un rectángulo?',
+                options: [
+                    'Representar un intercambio de información externo al sistema básico.',
+                    'Definir una operación interna que modifica el estado de la variable.',
+                    'Indicar una transición lógica entre dos procesos de decisión crítica.',
+                    'Establecer un límite terminal para la secuencia de pasos operativos.',
+                    'Marcar un punto de retorno obligatorio hacia el inicio del diagrama.'
+                ],
+                correctIndex: 0,
+                justification: 'Según las fuentes, el paralelogramo se usa para "Entrada/Salida", y pedir pan implica una interacción o solicitud de salida hacia el entorno (panadería).'
+            }, {
+                id: 3,
+                text: 'Si un alumno recibe el mensaje de error "Entrada/Salida usa un paralelogramo" al intentar clasificar una acción, ¿cuál es el diagnóstico técnico del error?',
+                options: [
+                    'Confundir la naturaleza de una interacción con un proceso interno.',
+                    'Ignorar la jerarquía de los símbolos terminales en la estructura total.',
+                    'Superponer una decisión lógica sobre una instrucción de movimiento.',
+                    'Interpretar un bucle de retorno como una asignación de datos fija.',
+                    'Omitir la validación de las flechas de flujo entre bloques operativos.'
+                ],
+                correctIndex: 0,
+                justification: 'El error indica que el usuario intentó usar un símbolo de acción (rectángulo) para una tarea que el sistema identifica como intercambio de datos (paralelogramo).'
+            }, {
+                id: 4,
+                text: '¿Qué función estructural cumple el "bucle de retorno" resaltado con colores en el diagrama del Robot Procesador?',
+                options: [
+                    'Permitir la repetición controlada de instrucciones hasta cumplir un fin.',
+                    'Finalizar la secuencia de comandos tras la primera entrada de datos.',
+                    'Dividir el flujo principal en dos ramas de ejecución independientes.',
+                    'Anular las acciones previas en caso de detectar un error de registro.',
+                    'Conectar el bloque de inicio directamente con la salida del algoritmo.'
+                ],
+                correctIndex: 0,
+                justification: 'El bucle (flecha que vuelve al inicio) permite procesar la lista de 5 alumnos de forma iterativa, volviendo a ejecutar los bloques hasta que la condición se cumpla.'
+            }, {
+                id: 5,
+                text: 'Al diseñar el "Diccionario de Símbolos", ¿qué criterio define la elección del rombo para la pregunta "¿Tengo dinero?"?',
+                options: [
+                    'Establecer una bifurcación del flujo basada en una condición lógica.',
+                    'Unificar dos procesos distintos bajo una misma etiqueta de ejecución.',
+                    'Designar el punto de partida obligatorio para cualquier acción física.',
+                    'Simbolizar la conclusión definitiva de todas las tareas del algoritmo.',
+                    'Describir una actividad física que no requiere validación del sistema.'
+                ],
+                correctIndex: 0,
+                justification: 'El rombo se utiliza para decisiones; en este caso, determina si el flujo continúa hacia "Pedir el pan" o toma otra ruta basada en la falta de dinero.'
+            }, {
+                id: 6,
+                text: '¿Cuál es el impacto en el algoritmo si la respuesta a la condición "¿Tengo dinero?" es negativa según el análisis de reflexión solicitado?',
+                options: [
+                    'Interrumpir el flujo lógico antes de alcanzar la meta de adquisición.',
+                    'Reiniciar la secuencia desde el bloque de inicio de forma automática.',
+                    'Transformar la acción de salida en un proceso de decisión recursivo.',
+                    'Ejecutar el bloque de registro sin validar la entrada de los datos.',
+                    'Modificar la forma del símbolo terminal para indicar un error crítico.'
+                ],
+                correctIndex: 0,
+                justification: 'La reflexión sobre el "NO" en esta pregunta busca que el alumno comprenda que el algoritmo no puede proceder a "Pedir el pan" sin el insumo necesario, deteniendo o desviando el flujo.'
+            }, {
+                id: 7,
+                text: 'En la secuencia "Inicio → Registrar → ¿Quedan? → Volver → Fin", ¿qué sucede si el bloque "Registrar" se coloca después de "¿Quedan?"?',
+                options: [
+                    'Riesgo de finalizar el proceso sin procesar el último elemento actual.',
+                    'Aumento de la eficiencia del sistema al reducir los pasos del bucle.',
+                    'Eliminación total de la necesidad de usar un símbolo de tipo rombo.',
+                    'Cambio automático de todos los rectángulos por paralelogramos verdes.',
+                    'Estabilización del flujo de datos mediante una validación anticipada.'
+                ],
+                correctIndex: 0,
+                justification: 'Si se pregunta si quedan elementos antes de registrar, el último elemento podría quedar sin procesar o el algoritmo podría intentar registrar algo inexistente según el orden lógico.'
+            }, {
+                id: 8,
+                text: '¿Cuál es la principal ventaja pedagógica del sistema de "Aprendizaje mediante el Error" mencionado en la Misión 3?',
+                options: [
+                    'Fomentar la corrección autónoma basada en la retroalimentación técnica.',
+                    'Garantizar que el alumno memorice los nombres de todos los símbolos.',
+                    'Impedir que se realicen intentos fallidos durante la fase de dibujo.',
+                    'Reemplazar la necesidad de explicaciones teóricas por parte del guía.',
+                    'Reducir el tiempo total de ejecución de las misiones en el simulador.'
+                ],
+                correctIndex: 0,
+                justification: 'Las fuentes destacan que la clave es la autonomía y que los mensajes de error pedagógicos ayudan al alumno a entender la lógica de los símbolos.'
+            }, {
+                id: 9,
+                text: 'Al configurar el "Robot Procesador" para 5 alumnos, ¿cuántas veces debe activarse técnicamente la flecha de retorno?',
+                options: [
+                    'Cuatro veces para permitir el procesamiento total de la lista definida.',
+                    'Cinco veces para asegurar que cada alumno pase por el bloque final.',
+                    'Una vez para validar que el sistema ha reconocido el inicio del flujo.',
+                    'Ninguna vez si el bloque de registro se considera una acción única.',
+                    'Diez veces para cubrir tanto la fase de entrada como la fase de salida.'
+                ],
+                correctIndex: 0,
+                justification: 'Tras registrar al primer alumno, se vuelve 4 veces más para completar los 5; la quinta vez la condición "¿Quedan?" será falsa y se irá al "Fin".'
+            }, {
+                id: 10,
+                text: '¿Qué propiedad del símbolo "Óvalo" lo distingue funcionalmente del "Rectángulo" en el diccionario de símbolos?',
+                options: [
+                    'Delimitar los puntos de entrada y salida absoluta de todo el proceso.',
+                    'Definir operaciones que transforman activamente los datos recibidos.',
+                    'Evaluar variables para decidir la dirección de las flechas de flujo.',
+                    'Representar la interacción del usuario con dispositivos periféricos.',
+                    'Conectar diferentes ramas de un algoritmo en un solo punto neutro.'
+                ],
+                correctIndex: 0,
+                justification: 'El óvalo se utiliza para "Inicio" y "Fin", marcando los límites del algoritmo, mientras que el rectángulo es para acciones.'
+            }, {
+                id: 11,
+                text: 'Durante la "Fase de Match", si un estudiante asigna "Entrar a la panadería" a un rombo, ¿por qué el sistema rechaza la acción?',
+                options: [
+                    'Porque el paso representa una acción lineal y no una duda lógica.',
+                    'Porque el símbolo elegido solo se permite al final de los algoritmos.',
+                    'Porque la instrucción requiere un intercambio de datos con terceros.',
+                    'Porque el simulador bloquea el uso de rombos en las fases iniciales.',
+                    'Porque la acción debe estar contenida en un bloque de color distinto.'
+                ],
+                correctIndex: 0,
+                justification: '"Entrar a la panadería" es una acción directa (rectángulo), no una decisión o condición que requiera un rombo.'
+            }, {
+                id: 12,
+                text: '¿Cuál es el propósito técnico de registrar el mensaje de error exacto en la carpeta tras un fallo en el simulador?',
+                options: [
+                    'Analizar la discrepancia entre la lógica del usuario y la del sistema.',
+                    'Cumplir con un requisito administrativo de la misión de aprendizaje.',
+                    'Evitar que el simulador se bloquee por realizar demasiados intentos.',
+                    'Comparar los resultados con los de otros alumnos en el mismo nivel.',
+                    'Demostrar que el software funciona correctamente ante entradas nulas.'
+                ],
+                correctIndex: 0,
+                justification: 'La reflexión sobre el mensaje de error busca que el alumno comprenda el "por qué era incorrecto", facilitando el diagnóstico técnico de su propia lógica.'
+            }, {
+                id: 13,
+                text: 'En el diseño de un diagrama, ¿qué indica una flecha que se dirige desde un rombo hacia un paso anterior?',
+                options: [
+                    'La existencia de un proceso iterativo condicionado por una variable.',
+                    'Un error crítico en la secuencia que impide la progresión del flujo.',
+                    'El cierre definitivo de la ejecución por falta de datos de entrada.',
+                    'Una simplificación de los pasos para optimizar el tiempo de respuesta.',
+                    'La transición obligatoria hacia un símbolo de inicio de tipo ovalado.'
+                ],
+                correctIndex: 0,
+                justification: 'Esto representa un bucle; si la condición del rombo lo requiere, el flujo vuelve atrás para repetir acciones, como en el caso del Robot.'
+            }, {
+                id: 14,
+                text: '¿Qué elemento del algoritmo asegura que el "Robot Procesador" se detenga tras completar la lista de alumnos?',
+                options: [
+                    'La evaluación negativa de la condición dentro del bloque de decisión.',
+                    'La ejecución del bloque de retorno en la fase intermedia del flujo.',
+                    'La asignación de colores distintos a las flechas de salida del robot.',
+                    'La captura de pantalla que valida el éxito de la misión en el sistema.',
+                    'El uso de un paralelogramo para marcar la salida de los cinco datos.'
+                ],
+                correctIndex: 0,
+                justification: 'El bloque "¿Quedan?" es el que determina cuándo dejar de volver y proceder al bloque "Fin".'
+            }, {
+                id: 15,
+                text: '¿Cómo se define técnicamente la "Acción" dentro del contexto de la Misión 2 y su diccionario?',
+                options: [
+                    'Operación interna o paso procedimental que no implica una decisión.',
+                    'Punto de bifurcación donde el flujo se divide según una respuesta.',
+                    'Comando de inicio que activa todos los procesos de carga de datos.',
+                    'Resultado final que se obtiene tras completar una serie de bucles.',
+                    'Mensaje de error que aparece cuando se usa un símbolo inadecuado.'
+                ],
+                correctIndex: 0,
+                justification: 'En el diccionario de símbolos, el rectángulo (Acción) se define para pasos como "Entrar" o "Pedir" que son ejecuciones directas.'
+            }, {
+                id: 16,
+                text: 'Si se requiere ilustrar el "Algoritmo del Pan" gráficamente, ¿cuál es el orden correcto de los símbolos según las fuentes?',
+                options: [
+                    'Óvalo, Rectángulo, Rombo, Paralelogramo y finalmente un Óvalo.',
+                    'Rombo, Paralelogramo, Rectángulo, Óvalo y finalmente un Rombo.',
+                    'Paralelogramo, Óvalo, Rectángulo, Rombo y finalmente un Óvalo.',
+                    'Rectángulo, Rombo, Óvalo, Paralelogramo y finalmente un Rectángulo.',
+                    'Óvalo, Rombo, Rectángulo, Paralelogramo y finalmente un Paralelogramo.'
+                ],
+                correctIndex: 0,
+                justification: 'Sigue la secuencia: Inicio (Óvalo), Entrar (Rectángulo), ¿Dinero? (Rombo), Pedir (Paralelogramo) y Fin (Óvalo).'
+            }, {
+                id: 17,
+                text: '¿Qué diagnóstico se puede hacer si un algoritmo carece de un símbolo de "Fin"?',
+                options: [
+                    'El proceso es técnicamente incompleto y carece de una meta lógica.',
+                    'El flujo se considera optimizado para sistemas de respuesta rápida.',
+                    'La secuencia se convierte automáticamente en un bucle de retorno.',
+                    'El bloque de inicio asume la función de cierre de manera implícita.',
+                    'Los distractores del sistema invalidan cualquier acción de registro.'
+                ],
+                correctIndex: 0,
+                justification: 'Todo algoritmo debe tener un inicio y un fin definidos mediante óvalos para ser funcionalmente correcto.'
+            }, {
+                id: 18,
+                text: '¿Por qué es fundamental el uso de "colores distintos" en el dibujo del bucle de retorno del Robot Procesador?',
+                options: [
+                    'Facilitar la identificación visual de la estructura lógica recursiva.',
+                    'Cumplir con una norma estética del diseño de diagramas digitales.',
+                    'Diferenciar entre las acciones de los alumnos y las del procesador.',
+                    'Indicar que ese bloque específico contiene un error no detectado.',
+                    'Separar los símbolos de entrada de los símbolos de salida técnica.'
+                ],
+                correctIndex: 0,
+                justification: 'El uso de colores busca "resaltar" el bucle, permitiendo al alumno distinguir la ruta de repetición de la ruta lineal.'
+            }, {
+                id: 19,
+                text: '¿Cuál es la relación entre el "paso de registro" y la "lista de 5 alumnos" en la Misión 1?',
+                options: [
+                    'El registro es la acción atómica que se repite en cada iteración.',
+                    'El registro es el bloque que finaliza el proceso tras cinco intentos.',
+                    'La lista de alumnos determina el color que debe usarse en el rombo.',
+                    'La lista es un mensaje de error que aparece si el registro falla.',
+                    'El registro es opcional si el alumno ya conoce los nombres previos.'
+                ],
+                correctIndex: 0,
+                justification: 'El robot debe "procesar la lista de 5 alumnos" ejecutando la acción de "Registrar" por cada uno de ellos mediante el bucle.'
+            }, {
+                id: 20,
+                text: 'Al completar el "Match" de pasos y símbolos, ¿qué determina que una misión sea exitosa en el simulador?',
+                options: [
+                    'La validación técnica de la correspondencia entre función y forma.',
+                    'La rapidez con la que el alumno arrastra los bloques al escritorio.',
+                    'El número de mensajes de error que el alumno logra recolectar.',
+                    'La creación de un diccionario con más de diez términos definidos.',
+                    'La exclusión de cualquier flecha que regrese hacia el bloque inicial.'
+                ],
+                correctIndex: 0,
+                justification: 'El éxito se muestra cuando todos los símbolos están "en verde" o el sistema "valida en pantalla" que el orden y los símbolos son los correctos según su función.'
+            }];
+
+            // ==================== ESTADO DE LA APLICACIÓN ====================
+            const TOTAL_QUESTIONS = questionsData.length;
+            let shuffledQuestions = [];
+            let userAnswers = {};
+            let currentIndex = 0;
+            let quizFinished = false;
+
+            // ==================== ELEMENTOS DOM ====================
+            const mainContent = document.getElementById('mainContent');
+            const resultsScreen = document.getElementById('resultsScreen');
+            const progressSection = document.getElementById('progressSection');
+            const questionText = document.getElementById('questionText');
+            const optionsList = document.getElementById('optionsList');
+            const justificationBox = document.getElementById('justificationBox');
+            const justLabel = document.getElementById('justLabel');
+            const justText = document.getElementById('justText');
+            const qIndicatorText = document.getElementById('qIndicatorText');
+            const respondidasCount = document.getElementById('respondidasCount');
+            const progressBarFill = document.getElementById('progressBarFill');
+            const btnPrev = document.getElementById('btnPrev');
+            const btnNext = document.getElementById('btnNext');
+            const btnFinish = document.getElementById('btnFinish');
+            const btnRestart = document.getElementById('btnRestart');
+            const resultsCircle = document.getElementById('resultsCircle');
+            const resultsPercentage = document.getElementById('resultsPercentage');
+            const resultsSummary = document.getElementById('resultsSummary');
+            const resultsEmoji = document.getElementById('resultsEmoji');
+
+            // ==================== FUNCIONES DE BARAJE ====================
+            function shuffleArray(arr) {
+                const a = arr.slice();
+                for (let i = a.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [a[i], a[j]] = [a[j], a[i]];
+                }
+                return a;
+            }
+
+            function prepareShuffledQuestions() {
+                const shuffled = shuffleArray(questionsData);
+                return shuffled.map(q => {
+                    const originalOptions = q.options.slice();
+                    const originalCorrectIndex = q.correctIndex;
+                    const correctText = originalOptions[originalCorrectIndex];
+                    const indices = originalOptions.map((_, i) => i);
+                    const shuffledIndices = shuffleArray(indices);
+                    const newOptions = shuffledIndices.map(i => originalOptions[i]);
+                    const newCorrectIndex = newOptions.indexOf(correctText);
+                    return {
+                        id: q.id,
+                        text: q.text,
+                        options: newOptions,
+                        correctIndex: newCorrectIndex,
+                        justification: q.justification
+                    };
+                });
+            }
+
+            // ==================== INICIALIZAR / REINICIAR ====================
+            function initializeQuiz() {
+                shuffledQuestions = prepareShuffledQuestions();
+                userAnswers = {};
+                currentIndex = 0;
+                quizFinished = false;
+                resultsScreen.classList.remove('active');
+                mainContent.style.display = 'flex';
+                progressSection.style.display = 'block';
+                updateProgressUI();
+                renderQuestion(currentIndex);
+            }
+
+            // ==================== ACTUALIZAR UI DE PROGRESO ====================
+            function updateProgressUI() {
+                const answeredCount = Object.keys(userAnswers).length;
+                const progressPercent = Math.round((answeredCount / TOTAL_QUESTIONS) * 100);
+                respondidasCount.textContent = answeredCount + ' / ' + TOTAL_QUESTIONS + ' respondidas';
+                progressBarFill.style.width = progressPercent + '%';
+                qIndicatorText.textContent = 'Pregunta ' + (currentIndex + 1) + ' de ' + TOTAL_QUESTIONS;
+            }
+
+            // ==================== RENDERIZAR PREGUNTA ====================
+            function renderQuestion(index) {
+                if (index < 0 || index >= TOTAL_QUESTIONS) return;
+                currentIndex = index;
+                const q = shuffledQuestions[index];
+                const qId = q.id;
+                const answered = userAnswers.hasOwnProperty(qId);
+                const answerData = userAnswers[qId] || null;
+
+                qIndicatorText.textContent = 'Pregunta ' + (index + 1) + ' de ' + TOTAL_QUESTIONS;
+                questionText.innerHTML = q.text;
+
+                optionsList.innerHTML = '';
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                q.options.forEach((optText, optIndex) => {
+                    const li = document.createElement('li');
+                    li.className = 'option-item';
+                    li.setAttribute('data-index', optIndex);
+
+                    const letterSpan = document.createElement('span');
+                    letterSpan.className = 'option-letter';
+                    letterSpan.textContent = letters[optIndex];
+
+                    const textSpan = document.createElement('span');
+                    textSpan.className = 'option-text';
+                    textSpan.textContent = optText;
+
+                    const iconSpan = document.createElement('span');
+                    iconSpan.className = 'option-icon';
+
+                    li.appendChild(letterSpan);
+                    li.appendChild(textSpan);
+                    li.appendChild(iconSpan);
+
+                    if (answered) {
+                        li.classList.add('disabled');
+                        if (optIndex === q.correctIndex) {
+                            li.classList.add('correct');
+                        }
+                        if (optIndex === answerData.selectedIndex && optIndex !== q.correctIndex) {
+                            li.classList.add('incorrect');
+                        }
+                        if (!answerData.isCorrect && optIndex === q.correctIndex) {
+                            li.classList.add('reveal-correct');
+                            if (optIndex === answerData.selectedIndex) {
+                                li.classList.remove('reveal-correct');
+                                li.classList.add('incorrect');
+                            }
+                        }
+                    } else {
+                        li.addEventListener('click', function() {
+                            handleOptionSelect(q, optIndex);
+                        });
+                    }
+
+                    optionsList.appendChild(li);
+                });
+
+                if (answered) {
+                    justificationBox.classList.add('visible');
+                    if (answerData.isCorrect) {
+                        justificationBox.classList.add('correct-just');
+                        justificationBox.classList.remove('incorrect-just');
+                        justLabel.textContent = '✅ Correcto – Justificación técnica';
+                    } else {
+                        justificationBox.classList.remove('correct-just');
+                        justificationBox.classList.add('incorrect-just');
+                        justLabel.textContent = '❌ Incorrecto – Justificación técnica';
+                    }
+                    justText.textContent = q.justification;
+                } else {
+                    justificationBox.classList.remove('visible', 'correct-just', 'incorrect-just');
+                    justLabel.textContent = 'Justificación técnica';
+                    justText.textContent = '';
+                }
+
+                btnPrev.disabled = (currentIndex === 0);
+                if (currentIndex === TOTAL_QUESTIONS - 1) {
+                    btnNext.textContent = 'Finalizar →';
+                    btnNext.classList.add('btn-finish');
+                } else {
+                    btnNext.textContent = 'Siguiente →';
+                    btnNext.classList.remove('btn-finish');
+                }
+
+                updateProgressUI();
+                document.getElementById('appContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            // ==================== MANEJAR SELECCIÓN DE OPCIÓN ====================
+            function handleOptionSelect(questionObj, selectedIndex) {
+                const qId = questionObj.id;
+                if (userAnswers.hasOwnProperty(qId)) return;
+
+                const isCorrect = (selectedIndex === questionObj.correctIndex);
+                userAnswers[qId] = {
+                    selectedIndex: selectedIndex,
+                    isCorrect: isCorrect
+                };
+
+                renderQuestion(currentIndex);
+            }
+
+            // ==================== NAVEGACIÓN ====================
+            function goToNext() {
+                if (currentIndex < TOTAL_QUESTIONS - 1) {
+                    renderQuestion(currentIndex + 1);
+                } else {
+                    finishQuiz();
+                }
+            }
+
+            function goToPrev() {
+                if (currentIndex > 0) {
+                    renderQuestion(currentIndex - 1);
+                }
+            }
+
+            // ==================== FINALIZAR CUESTIONARIO ====================
+            function finishQuiz() {
+                quizFinished = true;
+                const answeredCount = Object.keys(userAnswers).length;
+                const correctCount = Object.values(userAnswers).filter(a => a.isCorrect).length;
+                const percentage = answeredCount > 0 ? Math.round((correctCount / TOTAL_QUESTIONS) * 100) : 0;
+
+                mainContent.style.display = 'none';
+                progressSection.style.display = 'none';
+                resultsScreen.classList.add('active');
+
+                // Configurar círculo de resultados
+                resultsCircle.style.setProperty('--pct', percentage * 3.6 + 'deg');
+                resultsCircle.classList.remove('excellent', 'good', 'fair', 'poor');
+                if (percentage >= 90) resultsCircle.classList.add('excellent');
+                else if (percentage >= 70) resultsCircle.classList.add('good');
+                else if (percentage >= 50) resultsCircle.classList.add('fair');
+                else resultsCircle.classList.add('poor');
+
+                resultsPercentage.textContent = percentage;
+
+                let emoji, mensaje;
+                if (percentage >= 90) {
+                    emoji = '🏆';
+                    mensaje = '¡Excelente! Dominas los algoritmos y diagramas de flujo a nivel técnico avanzado.';
+                } else if (percentage >= 70) {
+                    emoji = '👍';
+                    mensaje = 'Muy buen trabajo. Tienes una base sólida en la lógica de símbolos y bucles.';
+                } else if (percentage >= 50) {
+                    emoji = '📚';
+                    mensaje = 'Vas por buen camino. Repasa las justificaciones para afianzar los conceptos.';
+                } else {
+                    emoji = '💪';
+                    mensaje = 'Sigue practicando. Cada error es una oportunidad para dominar la lógica algorítmica.';
+                }
+                resultsEmoji.textContent = emoji;
+                resultsSummary.innerHTML =
+                    '<strong>' + correctCount + ' aciertos</strong> de ' + TOTAL_QUESTIONS +
+                    ' preguntas.<br>Has respondido <strong>' + answeredCount + '</strong> de ' + TOTAL_QUESTIONS +
+                    '.<br>' + mensaje;
+
+                resultsScreen.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+
+            // ==================== EVENT LISTENERS ====================
+            btnNext.addEventListener('click', goToNext);
+            btnPrev.addEventListener('click', goToPrev);
+            btnFinish.addEventListener('click', function() {
+                if (Object.keys(userAnswers).length === 0) {
+                    if (confirm(
+                            'No has respondido ninguna pregunta aún. ¿Quieres finalizar la práctica de todos modos? Verás un 0%.'
+                            )) {
+                        finishQuiz();
+                    }
+                } else {
+                    finishQuiz();
+                }
+            });
+            btnRestart.addEventListener('click', function() {
+                initializeQuiz();
+                document.getElementById('appContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            // Atajos de teclado
+            document.addEventListener('keydown', function(e) {
+                if (quizFinished) return;
+                if (e.key === 'ArrowRight' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                    e.preventDefault();
+                    goToNext();
+                }
+                if (e.key === 'ArrowLeft' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+                    e.preventDefault();
+                    goToPrev();
+                }
+                if (!quizFinished && currentIndex >= 0 && currentIndex < TOTAL_QUESTIONS) {
+                    const q = shuffledQuestions[currentIndex];
+                    if (!userAnswers.hasOwnProperty(q.id)) {
+                        const keyMap = { 'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4 };
+                        const pressed = e.key.toLowerCase();
+                        if (keyMap.hasOwnProperty(pressed) && keyMap[pressed] < q.options.length) {
+                            e.preventDefault();
+                            handleOptionSelect(q, keyMap[pressed]);
+                        }
+                    }
+                }
+            });
+
+            // ==================== INICIAR ====================
+            initializeQuiz();
+        })();
+    </script>
+</body>
+</html>
